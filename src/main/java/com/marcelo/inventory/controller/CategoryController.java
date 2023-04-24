@@ -3,6 +3,7 @@ package com.marcelo.inventory.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,11 +17,23 @@ public class CategoryController {
 	@Autowired
 	private ICategoryService service;
 	
+	/**
+	 * get all categories
+	 * @return
+	 */
 	@GetMapping("/categories")
 	public ResponseEntity<CategoryResponseRest> findAll(){
-		
-		return service.findAll();
+		return service.findAll();	
+	}
 	
+	/**
+	 * get category by id
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/categories/{id}")
+	public ResponseEntity<CategoryResponseRest> findById(@PathVariable Long id) {
+		return service.findById(id);
 	}
 	
 }

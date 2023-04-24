@@ -8,4 +8,6 @@ public interface ICategoryService {
 	
 	public ResponseEntity<CategoryResponseRest> findAll();
 	
+	public ResponseEntity<CategoryResponseRest> findById(Long id);
+	
 }

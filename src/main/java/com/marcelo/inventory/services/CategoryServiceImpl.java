@@ -1,6 +1,8 @@
 package com.marcelo.inventory.services;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,10 +34,36 @@ public class CategoryServiceImpl implements ICategoryService{
 			response.setMetadata("Respuesta ok", "00", "Respuesta exitosa");
 			
 		} catch (Exception e) {
-			response.setMetadata("Respuesta Error","01","Error en la consulta hacia la BD");
+			response.setMetadata("Respuesta Error","-1","Error en la consulta hacia la BD");
+			e.getStackTrace();
 			return new ResponseEntity<CategoryResponseRest>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
+		return new ResponseEntity<CategoryResponseRest>(response,HttpStatus.OK);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ResponseEntity<CategoryResponseRest> findById(Long id) {
+		
+		CategoryResponseRest response = new CategoryResponseRest();
+		List<Category> categories = new ArrayList<>();
+		
+		try {
+			Optional<Category> category = dao.findById(id);
+			if(category.isPresent()) {
+				categories.add(category.get());
+				response.setCategoryList(categories);
+				response.setMetadata("Respuesta ok","00","Categoria encontrada");
+			}else {
+				response.setMetadata("Respuesta Error","-1","Categoria no encontrada");
+				return new ResponseEntity<CategoryResponseRest>(response,HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			response.setMetadata("Respuesta Error","-1","Error en la consulta por id hacia la BD");
+			e.getStackTrace();
+			return new ResponseEntity<CategoryResponseRest>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		return new ResponseEntity<CategoryResponseRest>(response,HttpStatus.OK);
 	}
 	
