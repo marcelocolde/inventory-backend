@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,5 +52,15 @@ public class ProductController {
 		product.setPicture(Util.compressZLib(picture.getBytes()));
 		
 		return service.save(product, categoryId);
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/products/{id}")
+	public ResponseEntity<ProductResponseRest> findById(@PathVariable Long id){
+		return service.findById(id);
 	}
 }
