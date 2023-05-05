@@ -63,4 +63,15 @@ public class ProductController {
 	public ResponseEntity<ProductResponseRest> findById(@PathVariable Long id){
 		return service.findById(id);
 	}
+	
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	@GetMapping("/products/filter/{name}")
+	public ResponseEntity<ProductResponseRest> findByName(@PathVariable String name){
+		return service.findByName(name);
+	}
+	
 }
