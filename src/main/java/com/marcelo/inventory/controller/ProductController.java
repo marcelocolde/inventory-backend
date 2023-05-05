@@ -80,4 +80,9 @@ public class ProductController {
 		return service.deleteById(id);
 	}
 	
+	@GetMapping("/products")
+	public ResponseEntity<ProductResponseRest> findAll() {
+		return service.findAll();
+	}
+	
 }

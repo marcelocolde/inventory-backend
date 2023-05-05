@@ -131,6 +131,7 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
+	@Transactional
 	public ResponseEntity<ProductResponseRest> deleteById(Long id) {
 		
 		ProductResponseRest response = new ProductResponseRest();
@@ -150,6 +151,34 @@ public class ProductServiceImpl implements IProductService {
 		} catch (Exception e) {
 			e.getStackTrace();
 			response.setMetadata("Respuesta Error","-1","Error al eliminar producto con ID: "+ id);
+			return new ResponseEntity<ProductResponseRest>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<ProductResponseRest>(response,HttpStatus.OK);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ResponseEntity<ProductResponseRest> findAll() {
+		ProductResponseRest response = new ProductResponseRest();
+		List<Product> list = new ArrayList<Product>();
+		
+		try {
+			List<Product> listAux = (List<Product>) productDao.findAll();
+			if(listAux.size() > 0) {
+				listAux.stream().forEach(p -> {
+					p.setPicture(Util.decompressZLib(p.getPicture()));
+					list.add(p);
+				});
+				response.setMetadata("Respuesta ok","00","Exito al obtener todos los productos ");
+				response.setProducts(list);
+			}else {
+				response.setMetadata("Respuesta error","-2","No se encuentran productos disponibles");
+				return new ResponseEntity<ProductResponseRest>(response,HttpStatus.CONFLICT);
+			}
+		} catch (Exception e) {
+			e.getStackTrace();
+			response.setMetadata("Respuesta Error","-1","Error al obtener todos los productos ");
 			return new ResponseEntity<ProductResponseRest>(response,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
