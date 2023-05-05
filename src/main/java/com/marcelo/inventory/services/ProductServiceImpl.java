@@ -1,6 +1,7 @@
 package com.marcelo.inventory.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,6 +128,32 @@ public class ProductServiceImpl implements IProductService {
 		
 		return new ResponseEntity<ProductResponseRest>(response,HttpStatus.OK);
 		
+	}
+
+	@Override
+	public ResponseEntity<ProductResponseRest> deleteById(Long id) {
+		
+		ProductResponseRest response = new ProductResponseRest();
+		
+		try {
+			Optional<Product> product = productDao.findById(id);
+			
+			if(product.isPresent()) {
+				productDao.deleteById(id);
+				response.setMetadata("Respuesta ok","00","Se eliminó correctamente el producto ID: "+id);
+				response.setProducts(Arrays.asList(product.get()));
+			}else {
+				response.setMetadata("Respuesta Error","-1","No se encontró el producto con ID: "+id);
+				return new ResponseEntity<ProductResponseRest>(response,HttpStatus.NOT_FOUND);
+			}
+			
+		} catch (Exception e) {
+			e.getStackTrace();
+			response.setMetadata("Respuesta Error","-1","Error al eliminar producto con ID: "+ id);
+			return new ResponseEntity<ProductResponseRest>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<ProductResponseRest>(response,HttpStatus.OK);
 	}
 
 }
